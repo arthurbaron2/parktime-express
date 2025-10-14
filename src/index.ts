@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import dotenv from "dotenv";
 import cron from "node-cron";
 import type { Destination } from "./themeParksAPI.types.js";
+import cors from "cors";
 
 export const DISNEYLAND_PARK_ID = "dae968d5-630d-4719-8b06-3d107e944401";
 export const DISNEYLAND_RESORT_ID = "e8d0207f-da8a-4048-bec8-117aa946b2c2";
@@ -28,6 +29,13 @@ let parkData: Record<string, Destination> = {};
 
 dotenv.config();
 const app = express();
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://parktime.fr"],
+    credentials: true,
+  })
+);
 
 const PORT = process.env.PORT || 3000;
 
