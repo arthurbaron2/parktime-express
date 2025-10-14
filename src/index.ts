@@ -32,7 +32,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://parktime.fr"],
+    origin: ["http://localhost:5173", "https://parktime.fr"],
     credentials: true,
   })
 );
