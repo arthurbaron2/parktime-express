@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx tsc && node dist/index.js",
     "watch": "nodemon",
-    "start:prod": "npx tsc && pm2 start dist/index.js"
+    "start:prod": "npx tsc && pm2 start dist/index.js --name parktime-express && pm2 startup systemd && pm2 save"
   },
   "keywords": [],
   "author": "",
