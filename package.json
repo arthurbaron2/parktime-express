@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx tsc && node dist/index.js",
-    "watch": "nodemon",
+    "dev": "npx tsc && nodemon dist/index.js",
+    "watch": "nodemon --exec \"npx tsc && node dist/index.js\"",
     "start:prod": "npx tsc && pm2 start dist/index.js --name parktime-express && pm2 startup systemd && pm2 save"
   },
   "keywords": [],
@@ -24,6 +25,7 @@
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.3",
+    "@types/pg": "^8.15.5",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
