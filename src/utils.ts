@@ -76,12 +76,19 @@ const getEnrichedAttractionLiveData = (
   park_id: parkId,
 });
 
+const filterAttractionsData = (
+  attractionsData: EnrichedAttractionLiveData[]
+): EnrichedAttractionLiveData[] =>
+  attractionsData.filter((attraction) => attraction.status === "OPERATING");
+
 export const putAllDestimationsWaitTimes = async (
   destinations: Record<string, Destination>
 ): Promise<void> => {
-  const attractionsData = getFattenAttractionsData(destinations);
+  const filteredAttractionsData = filterAttractionsData(
+    getFattenAttractionsData(destinations)
+  );
 
-  const data: WaitTimeRow[] = attractionsData.map((attraction) => {
+  const data: WaitTimeRow[] = filteredAttractionsData.map((attraction) => {
     return {
       attractionId: attraction.id,
       standbyWait: attraction.queue?.STANDBY?.waitTime ?? null,
