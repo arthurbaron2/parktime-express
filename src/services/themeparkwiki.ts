@@ -27,7 +27,7 @@ const fetchAllParksData = async (): Promise<Record<string, Destination>> => {
     }),
   )
 
-  console.log('✅ themeparkk.wiki data fetched successfully')
+  console.log('✅ themepark.wiki data fetched successfully')
 
   return fetchedData
 }
