@@ -14,8 +14,11 @@ const getAttractionById = async (id: string): Promise<Attraction | null> => {
   return await attractionsQueries.getAttractionById(id)
 }
 
-const getAttractionStatisticsById = async (id: string): Promise<AttractionStatisticsGrouped> => {
-  return await attractionsQueries.getAttractionStatisticsById(id)
+const getAttractionStatisticsById = async (
+  id: string,
+  timezone: string = 'Europe/Paris',
+): Promise<AttractionStatisticsGrouped> => {
+  return await attractionsQueries.getAttractionStatisticsById(id, timezone)
 }
 
 export default { putAllDestimationsAttractions, getAttractionById, getAttractionStatisticsById }

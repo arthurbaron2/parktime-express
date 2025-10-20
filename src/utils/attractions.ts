@@ -50,3 +50,12 @@ export const getAttractionWaitTimes = (attractionId: string, parkId: string): Wa
     recorded_at: attraction.lastUpdated,
   }
 }
+
+export const getParkTimezone = (parkId: string): string => {
+  const data = getLiveData()
+  const park = data[parkId]
+  if (!park) {
+    throw new Error(`Park ${parkId} not found`)
+  }
+  return park.timezone
+}

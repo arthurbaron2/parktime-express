@@ -5,13 +5,17 @@ import type {
   AttractionStatisticsGrouped,
   RawAttractionStatistics,
 } from '../types.js'
+import { toLocal } from '../utils/date.js'
 
 const getAttractionById = async (id: string): Promise<Attraction | null> => {
   const result = await pool.query('SELECT * FROM attractions WHERE id = $1', [id])
   return result.rows[0]
 }
 
-const getAttractionStatisticsById = async (id: string): Promise<AttractionStatisticsGrouped> => {
+const getAttractionStatisticsById = async (
+  id: string,
+  timezone: string,
+): Promise<AttractionStatisticsGrouped> => {
   try {
     const query = `
           SELECT
@@ -41,7 +45,7 @@ const getAttractionStatisticsById = async (id: string): Promise<AttractionStatis
       (acc: AttractionStatisticsGrouped, row: RawAttractionStatistics) => {
         if (!acc[row.period]) acc[row.period] = []
         acc[row.period]?.push({
-          recorded_at: row.recorded_at,
+          recorded_at: toLocal(row.recorded_at, timezone),
           standby_wait: row.standby_wait,
           single_rider_wait: row.single_rider_wait,
         })

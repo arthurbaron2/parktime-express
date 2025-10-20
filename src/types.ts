@@ -30,7 +30,7 @@ export interface RawAttractionStatistics {
 }
 
 export interface AttractionStatistics {
-  recorded_at: string
+  recorded_at: string | null
   standby_wait: number
   single_rider_wait: number
 }

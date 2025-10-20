@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAttractionWaitTimes } from '../utils/attractions.js'
+import { getAttractionWaitTimes, getParkTimezone } from '../utils/attractions.js'
 import attractionsService from '../services/attractions.js'
 
 const router = express.Router()
@@ -31,7 +31,16 @@ router.get('/:attractionId/statistics', async (request, response) => {
     return
   }
 
-  const statistics = await attractionsService.getAttractionStatisticsById(attractionId)
+  const attraction = await attractionsService.getAttractionById(attractionId)
+
+  if (!attraction) {
+    response.status(404).send('Attraction not found')
+    return
+  }
+
+  const timezone = getParkTimezone(attraction.park_id)
+
+  const statistics = await attractionsService.getAttractionStatisticsById(attractionId, timezone)
 
   response.status(200).send(statistics)
 })
