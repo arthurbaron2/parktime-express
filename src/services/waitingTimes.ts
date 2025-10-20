@@ -14,6 +14,7 @@ const putAllDestimationsWaitTimes = async (
       attractionId: attraction.id,
       standbyWait: attraction.queue?.STANDBY?.waitTime ?? null,
       singleRiderWait: attraction.queue?.SINGLE_RIDER?.waitTime ?? null,
+      recorded_at: attraction.lastUpdated,
     }
   })
 

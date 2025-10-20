@@ -4,6 +4,7 @@ export interface WaitTimeRow {
   attractionId: string
   standbyWait: number | null
   singleRiderWait: number | null
+  recorded_at: string
 }
 
 export interface EnrichedAttractionLiveData extends AttractionLiveData {

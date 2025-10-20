@@ -47,5 +47,6 @@ export const getAttractionWaitTimes = (attractionId: string, parkId: string): Wa
     attractionId,
     standbyWait: attraction.queue.STANDBY.waitTime ?? null,
     singleRiderWait: attraction.queue.SINGLE_RIDER?.waitTime ?? null,
+    recorded_at: attraction.lastUpdated,
   }
 }
