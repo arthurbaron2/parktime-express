@@ -25,4 +25,4 @@ export const fetchAndSaveData = async ({ date }: { date: Date }): Promise<void> 
   }
 }
 
-cron.schedule('* 0-1,7-23 * * *', fetchAndSaveData)
+cron.schedule('* * * * *', fetchAndSaveData)
