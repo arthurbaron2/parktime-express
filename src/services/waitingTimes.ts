@@ -1,13 +1,12 @@
 import type { WaitTimeRow } from '../types.js'
 import type { Destination } from '../liveData.types.js'
-import { filterAttractionsData } from '../utils/attractions.js'
 import { getFlattenAttractionsData } from '../utils/attractions.js'
 import waitingTimesQueries from '../queries/waitingTimes.js'
 
 const putAllDestimationsWaitTimes = async (
   destinations: Record<string, Destination>,
 ): Promise<void> => {
-  const filteredAttractionsData = filterAttractionsData(getFlattenAttractionsData(destinations))
+  const filteredAttractionsData = getFlattenAttractionsData(destinations)
 
   const data: WaitTimeRow[] = filteredAttractionsData.map((attraction) => {
     return {
@@ -15,6 +14,7 @@ const putAllDestimationsWaitTimes = async (
       standbyWait: attraction.standbyWait,
       singleRiderWait: attraction.singleRiderWait,
       recorded_at: attraction.lastUpdated,
+      status: attraction.status,
     }
   })
 

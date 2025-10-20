@@ -24,11 +24,6 @@ const getEnrichedAttractionLiveData = (
   park_id: parkId,
 })
 
-export const filterAttractionsData = (
-  attractionsData: EnrichedAttractionLiveData[],
-): EnrichedAttractionLiveData[] =>
-  attractionsData.filter((attraction) => attraction.status === 'OPERATING')
-
 export const getAttractionWaitTimes = (attractionId: string, parkId: string): WaitTimeRow => {
   const data = getLiveData()
   const attraction = data[parkId]?.liveData.find((attraction) => attraction.id === attractionId) as
@@ -39,15 +34,12 @@ export const getAttractionWaitTimes = (attractionId: string, parkId: string): Wa
     throw new Error(`Attraction ${attractionId} not found in park ${parkId}`)
   }
 
-  if (!attraction.standbyWait || !attraction.singleRiderWait) {
-    throw new Error(`Attraction ${attractionId} has no queue`)
-  }
-
   return {
     attractionId,
     standbyWait: attraction.standbyWait,
     singleRiderWait: attraction.singleRiderWait,
     recorded_at: attraction.lastUpdated,
+    status: attraction.status,
   }
 }
 

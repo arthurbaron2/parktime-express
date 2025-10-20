@@ -7,19 +7,16 @@ import themeparkwikiServices from './services/themeparkwiki.js'
 export const fetchAndSaveData = async ({ date }: { date: Date }): Promise<void> => {
   try {
     console.log(
-      `⏳ Running a fetch data operation at ${date.toLocaleDateString('fr-FR', {
+      `⏳ Running a fetch data operation - ${date.toLocaleDateString('fr-FR', {
         hour: '2-digit',
         minute: '2-digit',
+        second: '2-digit',
       })}`,
     )
     const data = await themeparkwikiServices.fetchAllParksData()
     setLiveData(data)
     await attractionsServices.putAllDestimationsAttractions(data)
-    if (date.getMinutes() % 5 === 0) {
-      await waitingTimesServices.putAllDestimationsWaitTimes(data)
-    } else {
-      console.log(`⏸️​  ${5 - (date.getMinutes() % 5)} minutes until next wait time insertion`)
-    }
+    await waitingTimesServices.putAllDestimationsWaitTimes(data)
   } catch (error) {
     console.error('❌ Error fetching park data:', error)
   }

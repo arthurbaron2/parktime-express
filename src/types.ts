@@ -1,10 +1,11 @@
-import type { AttractionLiveData } from './liveData.types.js'
+import type { AttractionLiveData, Status } from './liveData.types.js'
 
 export interface WaitTimeRow {
   attractionId: string
   standbyWait: number | null
   singleRiderWait: number | null
   recorded_at: string
+  status: Status
 }
 
 export interface EnrichedAttractionLiveData extends AttractionLiveData {
