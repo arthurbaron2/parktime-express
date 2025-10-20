@@ -18,8 +18,11 @@ const putAllDestimationsWaitTimes = async (
     }
   })
 
-  if (data.length > 0) {
-    await waitingTimesQueries.insertManyWaitTimes(data)
+  if (data.length <= 0) return
+
+  const chunkSize = 500
+  for (let i = 0; i < data.length; i += chunkSize) {
+    await waitingTimesQueries.insertManyWaitTimes(data.slice(i, i + chunkSize))
   }
 }
 
