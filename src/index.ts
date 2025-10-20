@@ -1,6 +1,5 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import cors from 'cors'
 import { pool } from './database.js'
 import liveDataRouter from './router/liveData.js'
 import './cron.js'
@@ -9,22 +8,6 @@ import { fetchAndSaveData } from './cron.js'
 
 dotenv.config()
 const app = express()
-
-const allowedOrigins = ['http://localhost:5173', 'https://parktime.fr']
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    credentials: true,
-    methods: ['GET'],
-  }),
-)
 
 app.use('/live-data', liveDataRouter)
 app.use('/attraction', attractionRouter)
