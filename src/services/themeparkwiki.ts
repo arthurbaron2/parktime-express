@@ -1,4 +1,4 @@
-import type { Destination } from '../themeParksAPI.types.js'
+import type { ThemeParksAPIDestination } from '../themeParksAPI.types.js'
 import {
   DISNEYLAND_RESORT_ID,
   ASTERIX_PARK_ID,
@@ -7,6 +7,8 @@ import {
   WALIBI_RHONE_ALPES_PARK_ID,
   FUTUROSCOPE_ID,
 } from '../constants.js'
+import type { Destination } from '../liveData.types.js'
+import { serializeDestination } from '../serializer.js'
 
 const parksToFetch = [
   DISNEYLAND_RESORT_ID,
@@ -43,8 +45,8 @@ const fetchParkData = async (parkId: string): Promise<Destination> => {
     throw new Error('Network response was not ok')
   }
 
-  const data = await response.json()
-  return data
+  const data: ThemeParksAPIDestination = await response.json()
+  return serializeDestination(data)
 }
 
 export default { fetchAllParksData }

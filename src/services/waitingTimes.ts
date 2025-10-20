@@ -1,5 +1,5 @@
 import type { WaitTimeRow } from '../types.js'
-import type { Destination } from '../themeParksAPI.types.js'
+import type { Destination } from '../liveData.types.js'
 import { filterAttractionsData } from '../utils/attractions.js'
 import { getFlattenAttractionsData } from '../utils/attractions.js'
 import waitingTimesQueries from '../queries/waitingTimes.js'
@@ -12,8 +12,8 @@ const putAllDestimationsWaitTimes = async (
   const data: WaitTimeRow[] = filteredAttractionsData.map((attraction) => {
     return {
       attractionId: attraction.id,
-      standbyWait: attraction.queue?.STANDBY?.waitTime ?? null,
-      singleRiderWait: attraction.queue?.SINGLE_RIDER?.waitTime ?? null,
+      standbyWait: attraction.standbyWait,
+      singleRiderWait: attraction.singleRiderWait,
       recorded_at: attraction.lastUpdated,
     }
   })

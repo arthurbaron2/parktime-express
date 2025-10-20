@@ -1,4 +1,4 @@
-import type { AttractionLiveData, Destination } from '../themeParksAPI.types.js'
+import type { Destination, AttractionLiveData } from '../liveData.types.js'
 import type { EnrichedAttractionLiveData, WaitTimeRow } from '../types.js'
 import { getLiveData } from '../states/liveData.js'
 
@@ -39,14 +39,14 @@ export const getAttractionWaitTimes = (attractionId: string, parkId: string): Wa
     throw new Error(`Attraction ${attractionId} not found in park ${parkId}`)
   }
 
-  if (!attraction.queue) {
+  if (!attraction.standbyWait || !attraction.singleRiderWait) {
     throw new Error(`Attraction ${attractionId} has no queue`)
   }
 
   return {
     attractionId,
-    standbyWait: attraction.queue.STANDBY.waitTime ?? null,
-    singleRiderWait: attraction.queue.SINGLE_RIDER?.waitTime ?? null,
+    standbyWait: attraction.standbyWait,
+    singleRiderWait: attraction.singleRiderWait,
     recorded_at: attraction.lastUpdated,
   }
 }

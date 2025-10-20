@@ -1,4 +1,4 @@
-import type { Destination } from '../themeParksAPI.types.js'
+import type { Destination } from '../liveData.types.js'
 
 let liveData: Record<string, Destination> = {}
 

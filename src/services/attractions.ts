@@ -1,4 +1,4 @@
-import type { Destination } from '../themeParksAPI.types.js'
+import type { Destination } from '../liveData.types.js'
 import { getFlattenAttractionsData } from '../utils/attractions.js'
 import attractionsQueries from '../queries/attractions.js'
 import type { Attraction, AttractionStatisticsGrouped } from '../types.js'

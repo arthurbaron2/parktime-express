@@ -2,22 +2,21 @@ export type EntityType = 'DESTINATION' | 'PARK' | 'ATTRACTION' | 'SHOW'
 
 export type Status = 'OPERATING' | 'DOWN' | 'CLOSED' | 'REFURBISHMENT'
 
-export interface ThemeParksAPIDestination {
+export interface Destination {
   id: string
   name: string
   entityType: EntityType
   timezone: string
-  liveData: ThemeParksAPILiveData[]
+  liveData: LiveData[]
 }
 
-export type ThemeParksAPILiveData = ThemeParksAPIShowLiveData | ThemeParksAPIAttractionLiveData
+export type LiveData = ShowLiveData | AttractionLiveData
 
-export interface ThemeParksAPIShowLiveData {
+export interface ShowLiveData {
   id: string
   name: string
   entityType: 'SHOW'
   parkId: string
-  externalId: string
   showtimes: {
     type: string
     endTime: string
@@ -27,20 +26,13 @@ export interface ThemeParksAPIShowLiveData {
   lastUpdated: string
 }
 
-export interface ThemeParksAPIAttractionLiveData {
+export interface AttractionLiveData {
   id: string
   name: string
   entityType: 'ATTRACTION'
   parkId: string
-  externalId: string
-  queue?: {
-    STANDBY: {
-      waitTime: number
-    }
-    SINGLE_RIDER?: {
-      waitTime: number
-    }
-  }
+  standbyWait: number | null
+  singleRiderWait: number | null
   status: Status
   lastUpdated: string
 }

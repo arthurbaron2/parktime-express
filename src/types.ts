@@ -1,4 +1,4 @@
-import type { AttractionLiveData } from './themeParksAPI.types.js'
+import type { AttractionLiveData } from './liveData.types.js'
 
 export interface WaitTimeRow {
   attractionId: string
