@@ -16,6 +16,7 @@ const getAttractionById = async (attractionId: string): Promise<Attraction | nul
       a.name,
       a.park_id,
       a.park_name,
+      a.park_zone,
       a.height_restriction,
       COALESCE(json_agg(ai.interest_id) FILTER (WHERE ai.interest_id IS NOT NULL), '[]') AS interests
     FROM attractions a
@@ -25,7 +26,7 @@ const getAttractionById = async (attractionId: string): Promise<Attraction | nul
   `,
     [attractionId],
   )
-  const { id, name, park_id, park_name, height_restriction, interests }: RawAttraction =
+  const { id, name, park_id, park_name, height_restriction, park_zone, interests }: RawAttraction =
     result.rows[0]
 
   return {
@@ -33,6 +34,7 @@ const getAttractionById = async (attractionId: string): Promise<Attraction | nul
     name,
     parkId: park_id,
     parkName: park_name,
+    parkZone: park_zone,
     heightRestriction: height_restriction,
     interests,
   }

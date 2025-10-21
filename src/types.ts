@@ -18,6 +18,7 @@ export interface RawAttraction {
   name: string
   park_id: string
   park_name: string
+  park_zone: string
   height_restriction: string
   interests: string[]
 }
@@ -27,6 +28,7 @@ export interface Attraction {
   name: string
   parkId: string
   parkName: string
+  parkZone: string
   heightRestriction: string
   interests: string[]
 }
