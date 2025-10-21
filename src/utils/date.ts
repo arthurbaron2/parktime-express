@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 export const toUTC = (date: string, timezone: string) =>
   DateTime.fromISO(date, { zone: timezone }).toUTC().toISO()
 
-export const toLocal = (utcInput: string | number | Date, timezone: string) => {
+export const toLocal = (utcInput: string | number | Date | undefined | null, timezone: string) => {
   if (!utcInput) throw new Error(`⛔ Invalid UTC input: ${utcInput}`)
 
   let dtUtc: DateTime

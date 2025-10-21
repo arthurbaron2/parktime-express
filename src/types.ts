@@ -54,3 +54,10 @@ export interface AttractionStatistics {
 }
 
 export type AttractionStatisticsGrouped = Record<string, AttractionStatistics[]>
+
+export interface Uptime {
+  totalTime: number
+  operatingTime: number
+  downTime: number
+  uptimePercentage: number
+}
