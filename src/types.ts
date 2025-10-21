@@ -43,12 +43,14 @@ export interface RawAttractionStatistics {
   recorded_at: string
   standby_wait: number
   single_rider_wait: number
+  status: Status
 }
 
 export interface AttractionStatistics {
   recordedAt: string | null
   standbyWait: number
   singleRiderWait: number
+  status: Status
 }
 
 export type AttractionStatisticsGrouped = Record<string, AttractionStatistics[]>

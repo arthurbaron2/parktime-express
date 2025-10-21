@@ -55,7 +55,8 @@ const getAttractionStatisticsById = async (
             END AS period,
             recorded_at,
             standby_wait,
-            single_rider_wait
+            single_rider_wait,
+            status
           FROM wait_times
           WHERE attraction_id = $1
             AND (
@@ -76,6 +77,7 @@ const getAttractionStatisticsById = async (
           recordedAt: toLocal(row.recorded_at, timezone),
           standbyWait: row.standby_wait,
           singleRiderWait: row.single_rider_wait,
+          status: row.status,
         })
         return acc
       },
