@@ -9,7 +9,7 @@ export const getFlattenAttractionsData = (
     (acc, [parkId, destination]) => {
       const attractions = destination.liveData
         .filter((attraction) => attraction.entityType === 'ATTRACTION')
-        .map((attraction) => getEnrichedAttractionLiveData(attraction, parkId))
+        .map((attraction) => getEnrichedAttractionLiveData(attraction, parkId, destination.name))
 
       return [...acc, ...attractions]
     },
@@ -19,9 +19,11 @@ export const getFlattenAttractionsData = (
 const getEnrichedAttractionLiveData = (
   attraction: AttractionLiveData,
   parkId: string,
+  parkName: string,
 ): EnrichedAttractionLiveData => ({
   ...attraction,
-  park_id: parkId,
+  parkId: parkId,
+  parkName: parkName,
 })
 
 export const getAttractionWaitTimes = (attractionId: string, parkId: string): WaitTimeRow => {
@@ -38,7 +40,7 @@ export const getAttractionWaitTimes = (attractionId: string, parkId: string): Wa
     attractionId,
     standbyWait: attraction.standbyWait,
     singleRiderWait: attraction.singleRiderWait,
-    recorded_at: attraction.lastUpdated,
+    recordedAt: attraction.lastUpdated,
     status: attraction.status,
   }
 }

@@ -4,18 +4,31 @@ export interface WaitTimeRow {
   attractionId: string
   standbyWait: number | null
   singleRiderWait: number | null
-  recorded_at: string
+  recordedAt: string
   status: Status
 }
 
 export interface EnrichedAttractionLiveData extends AttractionLiveData {
+  parkId: string
+  parkName: string
+}
+
+export interface RawAttraction {
+  id: string
+  name: string
   park_id: string
+  park_name: string
+  height_restriction: string
+  interests: string[]
 }
 
 export interface Attraction {
   id: string
   name: string
-  park_id: string
+  parkId: string
+  parkName: string
+  heightRestriction: string
+  interests: string[]
 }
 
 export interface AttractionWithWaitTimes extends Attraction {
@@ -31,9 +44,9 @@ export interface RawAttractionStatistics {
 }
 
 export interface AttractionStatistics {
-  recorded_at: string | null
-  standby_wait: number
-  single_rider_wait: number
+  recordedAt: string | null
+  standbyWait: number
+  singleRiderWait: number
 }
 
 export type AttractionStatisticsGrouped = Record<string, AttractionStatistics[]>

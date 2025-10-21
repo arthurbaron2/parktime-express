@@ -16,7 +16,7 @@ const insertManyWaitTimes = async (data: WaitTimeRow[]): Promise<void> => {
       item.attractionId,
       item.standbyWait,
       item.singleRiderWait,
-      item.recorded_at,
+      item.recordedAt,
       item.status,
     )
   })

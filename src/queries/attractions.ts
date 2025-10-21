@@ -4,12 +4,38 @@ import type {
   EnrichedAttractionLiveData,
   AttractionStatisticsGrouped,
   RawAttractionStatistics,
+  RawAttraction,
 } from '../types.js'
 import { toLocal } from '../utils/date.js'
 
-const getAttractionById = async (id: string): Promise<Attraction | null> => {
-  const result = await pool.query('SELECT * FROM attractions WHERE id = $1', [id])
-  return result.rows[0]
+const getAttractionById = async (attractionId: string): Promise<Attraction | null> => {
+  const result = await pool.query(
+    `
+    SELECT 
+      a.id,
+      a.name,
+      a.park_id,
+      a.park_name,
+      a.height_restriction,
+      COALESCE(json_agg(ai.interest_id) FILTER (WHERE ai.interest_id IS NOT NULL), '[]') AS interests
+    FROM attractions a
+    LEFT JOIN attraction_interests ai ON ai.attraction_id = a.id
+    WHERE a.id = $1
+    GROUP BY a.id, a.name, a.park_id, a.park_name, a.height_restriction
+  `,
+    [attractionId],
+  )
+  const { id, name, park_id, park_name, height_restriction, interests }: RawAttraction =
+    result.rows[0]
+
+  return {
+    id,
+    name,
+    parkId: park_id,
+    parkName: park_name,
+    heightRestriction: height_restriction,
+    interests,
+  }
 }
 
 const getAttractionStatisticsById = async (
@@ -45,9 +71,9 @@ const getAttractionStatisticsById = async (
       (acc: AttractionStatisticsGrouped, row: RawAttractionStatistics) => {
         if (!acc[row.period]) acc[row.period] = []
         acc[row.period]?.push({
-          recorded_at: toLocal(row.recorded_at, timezone),
-          standby_wait: row.standby_wait,
-          single_rider_wait: row.single_rider_wait,
+          recordedAt: toLocal(row.recorded_at, timezone),
+          standbyWait: row.standby_wait,
+          singleRiderWait: row.single_rider_wait,
         })
         return acc
       },
@@ -71,15 +97,19 @@ const insertManyAttractions = async (
     const placeholders: string[] = []
 
     attractions.forEach((a, i) => {
-      const base = i * 3
-      placeholders.push(`($${base + 1}, $${base + 2}, $${base + 3})`)
-      values.push(a.id, a.name, a.park_id)
+      const base = i * 4
+      placeholders.push(`($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4})`)
+      values.push(a.id, a.name, a.parkId, a.parkName)
     })
 
     const query = `
-          INSERT INTO attractions (id, name, park_id)
+          INSERT INTO attractions (id, name, park_id, park_name)
           VALUES ${placeholders.join(',')}
-          ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name;
+          ON CONFLICT (id)
+          DO UPDATE SET
+            name = EXCLUDED.name,
+            park_id = EXCLUDED.park_id,
+            park_name = EXCLUDED.park_name;
         `
 
     await pool.query(query, values)

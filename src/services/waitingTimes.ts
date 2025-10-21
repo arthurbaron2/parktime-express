@@ -13,7 +13,7 @@ const putAllDestimationsWaitTimes = async (
       attractionId: attraction.id,
       standbyWait: attraction.standbyWait,
       singleRiderWait: attraction.singleRiderWait,
-      recorded_at: attraction.lastUpdated,
+      recordedAt: attraction.lastUpdated,
       status: attraction.status,
     }
   })

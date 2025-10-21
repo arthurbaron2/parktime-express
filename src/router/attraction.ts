@@ -19,8 +19,16 @@ router.get('/:attractionId', async (request, response) => {
     return
   }
 
-  const waitTimes = getAttractionWaitTimes(attraction.id, attraction.park_id)
-  response.status(200).send({ ...attraction, ...waitTimes })
+  const waitTimes = getAttractionWaitTimes(attraction.id, attraction.parkId)
+  response.status(200).send({
+    ...attraction,
+    liveData: {
+      standbyWait: waitTimes.standbyWait,
+      singleRiderWait: waitTimes.singleRiderWait,
+      recordedAt: waitTimes.recordedAt,
+      status: waitTimes.status,
+    },
+  })
 })
 
 router.get('/:attractionId/statistics', async (request, response) => {
@@ -38,7 +46,7 @@ router.get('/:attractionId/statistics', async (request, response) => {
     return
   }
 
-  const timezone = getParkTimezone(attraction.park_id)
+  const timezone = getParkTimezone(attraction.parkId)
 
   const statistics = await attractionsService.getAttractionStatisticsById(attractionId, timezone)
 
