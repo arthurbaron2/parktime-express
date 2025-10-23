@@ -15,7 +15,6 @@ export const transformRawStatisticsToDayWaitTimes = (
   const closedEvents: AttractionEvent[] = []
   const downEvents: AttractionEvent[] = []
 
-  // Ajouter un événement de fermeture entre minuit et la première ouverture
   if (rawStatistics.length > 0) {
     const firstRecord = rawStatistics[0]
 
@@ -24,7 +23,6 @@ export const transformRawStatisticsToDayWaitTimes = (
       const midnight = new Date(firstRecordDate)
       midnight.setHours(0, 0, 0, 0)
 
-      // Vérifier si la première entrée n'est pas déjà à minuit
       if (firstRecordDate.getTime() !== midnight.getTime()) {
         closedEvents.push({
           start: toLocal(midnight.toISOString(), timezone),
@@ -35,7 +33,6 @@ export const transformRawStatisticsToDayWaitTimes = (
   }
 
   rawStatistics.forEach((stat, index) => {
-    // Ajouter les temps d'attente
     if (stat.standby_wait !== null) {
       standby.push({
         recordedAt: stat.recorded_at,

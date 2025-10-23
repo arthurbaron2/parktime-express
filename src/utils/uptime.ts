@@ -20,7 +20,6 @@ export const getAttractionUptimeByDate = async (
 
   const timezone = getParkTimezone(attraction.parkId)
 
-  // Validation de la date si fournie
   if (date) {
     const parsedDate = toLocal(date, timezone)
     if (isNaN(new Date(parsedDate).getTime())) {
@@ -53,16 +52,34 @@ const getAttractionDayUptime = (
     }
   }
 
-  const openingTime = toLocal(dayStatistics[0]?.recorded_at, timezone)
-  const closingTime = toLocal(dayStatistics[dayStatistics.length - 1]?.recorded_at, timezone)
+  const lastStat = dayStatistics[dayStatistics.length - 1]
+  const filteredStatistics =
+    lastStat?.status === 'CLOSED' ? dayStatistics.slice(0, -1) : dayStatistics
+
+  if (filteredStatistics.length === 0) {
+    return {
+      totalTime: 0,
+      operatingTime: 0,
+      downTime: 0,
+      uptimePercentage: 0,
+    }
+  }
+
+  const openingTime = toLocal(filteredStatistics[0]?.recorded_at, timezone)
+  const closingTime = toLocal(
+    filteredStatistics[filteredStatistics.length - 1]?.recorded_at,
+    timezone,
+  )
 
   const totalOperatingTimeMs = new Date(closingTime).getTime() - new Date(openingTime).getTime()
   const totalOperatingTime = Math.floor(totalOperatingTimeMs / (1000 * 60))
 
-  const totalDownTimeMs = dayStatistics.reduce((acc, curr, index) => {
+  const totalDownTimeMs = filteredStatistics.reduce((acc, curr, index) => {
     if (curr.status === 'DOWN' || curr.status === 'CLOSED') {
       const currentDate = new Date(toLocal(curr.recorded_at, timezone)).getTime()
-      const nextDate = new Date(toLocal(dayStatistics[index + 1]?.recorded_at, timezone)).getTime()
+      const nextDate = new Date(
+        toLocal(filteredStatistics[index + 1]?.recorded_at, timezone),
+      ).getTime()
       const currentDuration = nextDate - currentDate
       return acc + currentDuration
     }
