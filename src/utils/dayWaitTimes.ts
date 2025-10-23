@@ -6,6 +6,25 @@ import type {
 } from '../types.js'
 import { toLocal } from './date.js'
 
+const mergeConsecutiveEvents = (events: AttractionEvent[]): AttractionEvent[] => {
+  if (events.length <= 1) return events
+
+  return events.reduce<AttractionEvent[]>((merged, currentEvent) => {
+    const lastMerged = merged[merged.length - 1]
+
+    if (!lastMerged || lastMerged.end !== currentEvent.start) {
+      merged.push(currentEvent)
+    } else {
+      merged[merged.length - 1] = {
+        start: lastMerged.start,
+        end: currentEvent.end,
+      }
+    }
+
+    return merged
+  }, [])
+}
+
 export const transformRawStatisticsToDayWaitTimes = (
   rawStatistics: RawAttractionStatistics[],
   timezone: string,
@@ -68,7 +87,7 @@ export const transformRawStatisticsToDayWaitTimes = (
   return {
     standby,
     singleRider,
-    closedEvents,
-    downEvents,
+    closedEvents: mergeConsecutiveEvents(closedEvents),
+    downEvents: mergeConsecutiveEvents(downEvents),
   }
 }
