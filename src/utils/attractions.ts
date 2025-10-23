@@ -1,12 +1,6 @@
 import type { Destination, AttractionLiveData } from '../liveData.types.js'
-import type {
-  EnrichedAttractionLiveData,
-  WaitTimeRow,
-  Uptime,
-  AttractionStatistics,
-} from '../types.js'
+import type { EnrichedAttractionLiveData, WaitTimeRow } from '../types.js'
 import { getLiveData } from '../states/liveData.js'
-import { toLocal } from './date.js'
 
 export const getFlattenAttractionsData = (
   destinations: Record<string, Destination>,
@@ -58,40 +52,4 @@ export const getParkTimezone = (parkId: string): string => {
     throw new Error(`Park ${parkId} not found`)
   }
   return park.timezone
-}
-
-export const getAttractionDayUptime = (
-  dayStatistics: AttractionStatistics[],
-  timezone: string,
-): Uptime => {
-  const openingTime = toLocal(dayStatistics[0]?.recordedAt, timezone)
-  const closingTime = toLocal(dayStatistics[dayStatistics.length - 1]?.recordedAt, timezone)
-
-  const totalOperatingTimeMs = new Date(closingTime).getTime() - new Date(openingTime).getTime()
-  const totalOperatingTime = Math.floor(totalOperatingTimeMs / (1000 * 60))
-
-  const totalDownTimeMs = dayStatistics.reduce((acc, curr, index) => {
-    if (curr.status === 'DOWN') {
-      const currentDate = new Date(toLocal(curr.recordedAt, timezone)).getTime()
-      const nextDate = new Date(toLocal(dayStatistics[index + 1]?.recordedAt, timezone)).getTime()
-      const currentDuration = nextDate - currentDate
-      return acc + currentDuration
-    }
-    return acc
-  }, 0)
-
-  const totalDownTime = Math.floor(totalDownTimeMs / (1000 * 60))
-
-  const uptimePercentage =
-    totalOperatingTimeMs > 0
-      ? Math.round(((totalOperatingTimeMs - totalDownTimeMs) / totalOperatingTimeMs) * 100 * 100) /
-        100
-      : 0
-
-  return {
-    totalTime: totalOperatingTime,
-    operatingTime: totalOperatingTime - totalDownTime,
-    downTime: totalDownTime,
-    uptimePercentage: uptimePercentage,
-  }
 }

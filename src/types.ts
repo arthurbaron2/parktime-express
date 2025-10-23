@@ -39,21 +39,28 @@ export interface AttractionWithWaitTimes extends Attraction {
 }
 
 export interface RawAttractionStatistics {
-  period: string
   recorded_at: string
   standby_wait: number
   single_rider_wait: number
   status: Status
 }
 
-export interface AttractionStatistics {
-  recordedAt: string | null
-  standbyWait: number
-  singleRiderWait: number
-  status: Status
+export interface DayAttractionWaitTimes {
+  singleRider: AttractionWaitTime[]
+  standby: AttractionWaitTime[]
+  closedEvents: AttractionEvent[]
+  downEvents: AttractionEvent[]
 }
 
-export type AttractionStatisticsGrouped = Record<string, AttractionStatistics[]>
+export interface AttractionWaitTime {
+  recordedAt: string
+  waitTime: number
+}
+
+export interface AttractionEvent {
+  start: string
+  end: string
+}
 
 export interface Uptime {
   totalTime: number

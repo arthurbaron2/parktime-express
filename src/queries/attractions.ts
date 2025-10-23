@@ -2,7 +2,6 @@ import { pool } from '../database.js'
 import type {
   Attraction,
   EnrichedAttractionLiveData,
-  AttractionStatisticsGrouped,
   RawAttractionStatistics,
   RawAttraction,
 } from '../types.js'
@@ -40,51 +39,41 @@ const getAttractionById = async (attractionId: string): Promise<Attraction | nul
   }
 }
 
-const getAttractionStatisticsById = async (
+const getAttractionStatisticsByDate = async (
   id: string,
   timezone: string,
-): Promise<AttractionStatisticsGrouped> => {
+  date?: string,
+): Promise<RawAttractionStatistics[]> => {
   try {
     const query = `
           SELECT
-            CASE
-              WHEN DATE(recorded_at) = CURRENT_DATE THEN 'today'
-              WHEN DATE(recorded_at) = CURRENT_DATE - INTERVAL '1 day' THEN 'yesterday'
-              WHEN DATE(recorded_at) = CURRENT_DATE - INTERVAL '7 days' THEN 'last_week'
-              WHEN DATE(recorded_at) = CURRENT_DATE - INTERVAL '1 year' THEN 'last_year'
-            END AS period,
             recorded_at,
             standby_wait,
             single_rider_wait,
             status
           FROM wait_times
           WHERE attraction_id = $1
-            AND (
-              DATE(recorded_at) = CURRENT_DATE
-              OR DATE(recorded_at) = CURRENT_DATE - INTERVAL '1 day'
-              OR DATE(recorded_at) = CURRENT_DATE - INTERVAL '7 days'
-              OR DATE(recorded_at) = CURRENT_DATE - INTERVAL '1 year'
-            )
+          AND (
+            DATE(recorded_at) = $2
+          )
           ORDER BY recorded_at ASC;
         `
 
-    const { rows } = await pool.query(query, [id])
+    const targetDate = date || new Date().toISOString().split('T')[0]
+    const { rows } = await pool.query(query, [id, targetDate])
 
-    const grouped: AttractionStatisticsGrouped = rows.reduce(
-      (acc: AttractionStatisticsGrouped, row: RawAttractionStatistics) => {
-        if (!acc[row.period]) acc[row.period] = []
-        acc[row.period]?.push({
-          recordedAt: toLocal(row.recorded_at, timezone),
-          standbyWait: row.standby_wait,
-          singleRiderWait: row.single_rider_wait,
-          status: row.status,
-        })
-        return acc
+    const rawAttractionStatistics: RawAttractionStatistics[] = rows.map(
+      ({ recorded_at, standby_wait, single_rider_wait, status }) => {
+        return {
+          recorded_at: toLocal(recorded_at, timezone),
+          standby_wait,
+          single_rider_wait,
+          status,
+        } as RawAttractionStatistics
       },
-      {},
     )
 
-    return grouped
+    return rawAttractionStatistics
   } catch (err) {
     throw new Error(`❌ Error fetching comparison data: ${err}`)
   }
@@ -126,5 +115,5 @@ const insertManyAttractions = async (
 export default {
   insertManyAttractions,
   getAttractionById,
-  getAttractionStatisticsById,
+  getAttractionStatisticsByDate,
 }
