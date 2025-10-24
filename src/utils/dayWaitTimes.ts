@@ -40,7 +40,7 @@ export const transformRawStatisticsToDayWaitTimes = (
     if (firstRecord) {
       const firstRecordDate = new Date(firstRecord.recorded_at)
       const midnight = new Date(firstRecordDate)
-      midnight.setHours(6, 0, 0, 0)
+      midnight.setHours(7, 0, 0, 0)
 
       if (firstRecordDate.getTime() !== midnight.getTime()) {
         closedEvents.push({
