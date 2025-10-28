@@ -20,12 +20,14 @@ const parksToFetch = [
 ]
 
 const fetchAllParksData = async (): Promise<Record<string, Destination>> => {
-  let fetchedData: Record<string, Destination> = {}
+  const fetchedData: Record<string, Destination> = {}
 
   await Promise.all(
-    parksToFetch.map(async (parkId) => {
+    parksToFetch.map(async (parkId: string) => {
       const data = await fetchParkData(parkId)
-      fetchedData = { ...fetchedData, [parkId]: data }
+      if (data) {
+        fetchedData[parkId] = data
+      }
     }),
   )
 
@@ -34,19 +36,33 @@ const fetchAllParksData = async (): Promise<Record<string, Destination>> => {
   return fetchedData
 }
 
-const fetchParkData = async (parkId: string): Promise<Destination> => {
+const fetchParkData = async (parkId: string): Promise<Destination | null> => {
   if (!parkId) {
     throw new Error('Park ID is required')
   }
 
-  const response = await fetch(`https://api.themeparks.wiki/v1/entity/${parkId}/live`)
+  try {
+    const response = await fetch(`https://api.themeparks.wiki/v1/entity/${parkId}/live`, {
+      // timeout après 15 secondes si le serveur ne répond pas
+      signal: AbortSignal.timeout(15000),
+    })
 
-  if (!response.ok) {
-    throw new Error('Network response was not ok')
+    if (!response.ok) {
+      console.error(`❌ HTTP ${response.status} when fetching park ${parkId}`)
+      return null
+    }
+
+    const data: ThemeParksAPIDestination = await response.json()
+    return serializeDestination(data)
+  } catch (error) {
+    // Gestion des erreurs réseau ou timeout
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      console.error(`⏱️ Timeout fetching data for park ${parkId}`)
+    } else {
+      console.error(`❌ Fetch failed for park ${parkId}:`, (error as Error).message)
+    }
+    return null
   }
-
-  const data: ThemeParksAPIDestination = await response.json()
-  return serializeDestination(data)
 }
 
 export default { fetchAllParksData }
